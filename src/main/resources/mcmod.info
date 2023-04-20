@@ -1,10 +1,10 @@
 [{
-  "modid": "gtnac",
-  "name": "GT Noob's Advancement",
-  "description": "kms",
+  "modid": "exampleaddon",
+  "name": "Example Addon for CEu",
+  "description": "kill me",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "authorList": ["dan"],
+  "authorList": ["Amogus"],
   "credits": "The many other projects relating to GT5u and GTCEu providing endless inspiration",
   "logoFile": "",
   "dependencies": []
