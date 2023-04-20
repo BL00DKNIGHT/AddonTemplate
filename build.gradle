@@ -1,0 +1,215 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath "org.spongepowered:mixingradle:${mixingradle_version}"
+    }
+}
+
+plugins {
+    id 'net.minecraftforge.gradle' version "${forge_gradle_version}"
+    id 'wtf.gofancy.fancygradle' version "${fancy_gradle_version}"
+}
+
+version = project.version
+group = project.maven_group
+archivesBaseName = "${project.archives_base_name}-${project.minecraft_version}"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+apply {
+    plugin 'java'
+    plugin 'idea'
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+minecraft {
+    mappings channel: "${mcp_mappings_channel}", version: "${mcp_mappings_version}"
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            // jvmArg '-Dfml.coreMods.load=' + coremod_plugin_class_name
+            // jvmArg '-Dmixin.hotSwap=true'
+            // jvmArg '-Dmixin.checks.interfaces=true'
+            // jvmArg '-Dmixin.debug=true'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            environment 'MC_VERSION', minecraft_version.toString()
+        }
+
+        server {
+            workingDirectory project.file('run')
+            // jvmArg '-Dfml.coreMods.load=' + coremod_plugin_class_name
+            // jvmArg '-Dmixin.hotSwap=true'
+            // jvmArg '-Dmixin.checks.interfaces=true'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            environment 'MC_VERSION', minecraft_version.toString()
+        }
+    }
+}
+
+repositories {
+    maven {
+        name 'Cleanroom Maven'
+        url 'https://maven.cleanroommc.com'
+    }
+    maven { // JEI
+        name 'Progwml6 Maven'
+        url 'https://dvs1.progwml6.com/files/maven/'
+    }
+    maven { // CraftTweaker and JEI Backup
+        name 'BlameJared Maven'
+        url 'https://maven.blamejared.com'
+    }
+    maven {
+        name 'Sponge Maven'
+        url 'https://repo.spongepowered.org/maven'
+    }
+    maven {
+        name 'Curse Maven'
+        url 'https://www.cursemaven.com'
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // Hard Dependencies
+    // the CCL deobf jar uses very old MCP mappings, making it error at runtime in runClient/runServer
+    // therefore we manually deobf the regular jar
+    implementation fg.deobf("curse.maven:codechicken-lib-1-8-${ccl_pid}:${ccl_fid}")
+    implementation fg.deobf("curse.maven:gregtech-ce-unofficial-${gt_pid}:${gt_fid}")
+
+    // Soft Dependencies
+    implementation "mezz.jei:jei_1.12.2:${project.jei_version}"
+    implementation "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${project.crt_version}"
+    implementation fg.deobf("curse.maven:top-${top_pid}:${top_fid}")
+    implementation fg.deobf("curse.maven:ctm-${ctm_pid}:${ctm_fid}")
+    implementation fg.deobf("curse.maven:groovyscript-${grs_pid}:${grs_fid}")
+    implementation fg.deobf("curse.maven:ae2-extended-life-${ae2_pid}:${ae2_fid}")
+
+    compileOnly "zone.rong:mixinbooter:${mixinbooter_version}"
+    runtimeOnly "zone.rong:mixinbooter:${mixinbooter_version}"
+
+    annotationProcessor "org.spongepowered:mixin:${mixin_annotations_version}:processor"
+}
+
+fancyGradle {
+    patches {
+        resources
+        coremods
+        asm
+        codeChickenLib
+    }
+}
+
+processJarTask jar
+
+if (project.build_deobfJar.toBoolean()) {
+    // Create deobf dev jars
+    tasks.register('deobfJar', Jar) {
+        archiveClassifier.set 'deobf'
+        from sourceSets.main.output
+    }
+    processJarTask deobfJar
+}
+
+if (project.build_sourceJar.toBoolean()) {
+    // Create source jar
+    tasks.register('sourcesJar', Jar) {
+        archiveClassifier.set 'sources'
+        from sourceSets.main.allJava
+    }
+}
+
+// Loading resources, works even on IDE client runs
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'src/api/java']
+        }
+
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+
+    main.output.setResourcesDir(main.java.classesDirectory)
+}
+
+artifacts {
+    if (project.build_deobfJar.toBoolean()) {
+        archives deobfJar
+    }
+    if (project.build_sourceJar.toBoolean()) {
+        archives sourcesJar
+    }
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    inputs.property 'version', version
+    inputs.property 'mcversion', minecraft_version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand(['version': version, 'mcversion': minecraft_version])
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+test {
+    testLogging {
+        events TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.FAILED
+        exceptionFormat TestExceptionFormat.FULL
+        showExceptions true
+        showStackTraces true
+        showCauses true
+        showStandardStreams true
+    }
+
+    useJUnitPlatform()
+}
+
+/**
+ * Applies required processing to jar tasks
+ * @param task the task to process
+ */
+private void processJarTask(task) {
+    task.configure {
+        manifest {
+            def attribute_map = [:]
+            attributes(attribute_map)
+        }
+    }
+}

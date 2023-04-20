@@ -1,0 +1,11 @@
+[{
+  "modid": "gtnac",
+  "name": "GT Noob's Advancement",
+  "description": "kms",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "authorList": ["dan"],
+  "credits": "The many other projects relating to GT5u and GTCEu providing endless inspiration",
+  "logoFile": "",
+  "dependencies": []
+}]
