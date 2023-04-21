@@ -1,0 +1,9 @@
+metaitem.example_susso_meta_item.name=Sussy
+metaitem.battery.re.ulv.potatos.name=PotatoBattery
+metaitem.circuit.potatos.name=PotatOS
+
+metaitem.example_susso_meta_item.tooltip=A example metaitem with a description!
+metaitem.battery.re.ulv.potatos.tooltip=Susy battery
+metaitem.circuit.potatos.tooltip=
+
+material.test_material=Test Material

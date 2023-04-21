@@ -1,11 +1,11 @@
 [{
   "modid": "exampleaddon",
   "name": "Example Addon for CEu",
-  "description": "kill me",
+  "description": "please kill me",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "authorList": ["Amogus"],
-  "credits": "The many other projects relating to GT5u and GTCEu providing endless inspiration",
+  "authorList": ["PutYourselfHere","Amogus"],
+  "credits": "Thanks to all GTCEu devs for maintaining greg on 1.12.2 and GTCE devs for the original project, special thanks to Dan and Tech22 for helping on the making of this example",
   "logoFile": "",
   "dependencies": []
 }]
