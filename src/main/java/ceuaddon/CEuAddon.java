@@ -2,7 +2,7 @@ package ceuaddon;
 
 import gregtech.api.GTValues;
 import gregtech.api.GregTechAPI;
-import ceuaddon.item.ExampleMetaItems;
+import ceuaddon.CommonProxy;
 import ceuaddon.recipe.ExampleRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.SidedProxy;
 
 @Mod(modid = CEuAddon.ID,
     name = CEuAddon.NAME,
@@ -23,14 +24,17 @@ public class CEuAddon {
     public static final String NAME = "Example Addon for CEu";
     public static final String VERSION = "0.0.1";
 
+    @SidedProxy(modId = ID, clientSide = "ceuaddon.CommonProxy", serverSide = "ceuaddon.CommonProxy")
+    public static CommonProxy proxy;
+
     @EventHandler
     public void onConstruction(FMLConstructionEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        ExampleMetaItems.init();
+        proxy.preLoad();
     }
 
     @SubscribeEvent

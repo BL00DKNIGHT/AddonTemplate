@@ -23,7 +23,6 @@ public class ExampleMaterials {
     public static void init() {
         testMaterial = new Material.Builder(32000, "test_material")
             .ingot().fluid().dust()
-            .color(0xFF8D3B)
                 //CEu uses the hex color code, but make sure to put 0x before the hex color
             .iconSet(EXAMPLE)
                 //gregtech/api/unification/material/info/MaterialIconSet.java
