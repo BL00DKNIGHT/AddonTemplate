@@ -1,4 +1,4 @@
-package ceuaddon;
+package ceuaddon.item;
 
 import gregtech.api.unification.material.Material;
 import gregtech.api.unification.material.properties.*; //recommended to check this if you want to add some properties
