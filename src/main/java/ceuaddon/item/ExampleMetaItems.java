@@ -22,13 +22,13 @@ public class ExampleMetaItems {
     public static MetaItem<?>.MetaValueItem HT_ITEM;
     public static MetaItem<?>.MetaValueItem TEST_PROCESSOR;
 
-    public static void preInit() {
+    public static void preInit() { // Creates a metaitem
         examplemeta = new StandardMetaItem();
         examplemeta.setRegistryName("example_metaitem");
     }
 
     @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
+    public static void registerItems(RegistryEvent.Register<Item> event) { // Registers subitems on the metaitem
         BASE_EXAMPLE = examplemeta.addItem(0, "metaitem.example");
 
         POTATOS = examplemeta.addItem(1, "battery.re.ulv.potatos").addComponents(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.ULV)).setUnificationData(OrePrefix.battery, Tier.ULV);
