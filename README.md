@@ -1,6 +1,6 @@
-## TemplateDevEnv
+## AddonTemplate
 
-Template workspace for modding Minecraft 1.12.2. Licensed under MIT, it is made for public use.
+A template for making addons on the GregTech: Community Edition Unofficial easier and comes already with some examples for making metaitems, singleblocks machines and multiblock ones
 
 This template currently utilizies **Gradle 4.10.3** + **ForgeGradle 2.3.4** + **Forge 14.23.5.2847**.
 
